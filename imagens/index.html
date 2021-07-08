@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <script src="js/campo-minado.js"></script>
+</head>
+
+<body>
+    <div id="exibir-execucao"></div>
+
+    <script>
+        var campoMinado = new CampoMinado();
+
+
+        document.getElementById('exibir-execucao').innerHTML += '----------- Início do jogo -----------';
+        document.getElementById('exibir-execucao').innerHTML += '<pre>' + campoMinado.Tabuleiro() + '</pre>';
+
+        // Realize sua codificação a partir deste ponto, boa sorte! //
+        var jogadas = 0; //Váriavel para contar o número de jogadas feitas pela máquina //
+        var estado = campoMinado.JogoStatus();
+
+        // função para fazer as jogadas aleatórias //
+        const jogadasPossiveis = (zero, um, dois, tres, quatro) => {
+
+            if (zero == 20 && um == 8 && dois == 5 && tres == 1 && quatro == 0) {
+
+                let num = Math.floor(Math.random() * 5); // Váriavel criada para gerar o número aleatório //
+
+                const indices = [
+                    [1, 9],
+                    [4, 3],
+                    [4, 2],
+                    [5, 7],
+                    [4, 1]
+                ]
+                return indices[num];
+            }
+
+            else if (dois == 6 && um < 10) {
+
+                let num = Math.floor(Math.random() * 3);
+
+                const indices = [
+                    [4, 3],
+                    [4, 2],
+                    [5, 1]
+                ]
+                return indices[num];
+            }
+
+            else if (quatro == 1) {
+
+                let num = Math.floor(Math.random() * 2);
+
+                const indices = [
+                    [5, 7],
+                    [6, 2]
+                ]
+                return indices[num];
+            }
+
+            else if (tres == 4) {
+
+                let num = Math.floor(Math.random() * 2);
+
+                const indices = [
+                    [5, 7],
+                    [6, 9]
+                ]
+                return indices[num];
+            }
+
+        }
+
+        // Abaixo os códigos para fazer a máquina fazer jogadas seguras dentro do campo minado //
+        let zero = [];
+        let um = [];
+        let dois = [];
+        let tres = [];
+        let quatro = [];
+
+        while (jogadas < 7 || estado == 0) {
+            var tabuleiro = campoMinado.Tabuleiro();
+
+            for (i = 0; i < tabuleiro.length; i++) {
+                for (y = 0; y < tabuleiro[i].length; y++) {
+                    if (tabuleiro[i][y] == "0") {
+                        zero.push(tabuleiro[i][y]);
+                    }
+
+                    else if (tabuleiro[i][y] == "1") {
+                        um.push(tabuleiro[i][y]);
+                    }
+
+                    else if (tabuleiro[i][y] == "2") {
+                        dois.push(tabuleiro[i][y]);
+                    }
+
+                    else if (tabuleiro[i][y] == "3") {
+                        tres.push(tabuleiro[i][y]);
+                    }
+
+                    else if (tabuleiro[i][y] == "4") {
+                        quatro.push(tabuleiro[i][y]);
+                    }
+
+
+                }
+            }
+
+            if (zero.length == 20 && um.length == 8 && dois.length == 5 && tres.length == 1) {
+
+                let array = jogadasPossiveis(zero.length, um.length, dois.length, tres.length, quatro.length);
+                campoMinado.Abrir(array[0], array[1]);
+            }
+
+            else if (um.length == 9 && dois.length == 5) {
+                campoMinado.Abrir(5, 2);
+            }
+
+            else if (dois.length == 6 && um.length < 10) {
+
+                let array = jogadasPossiveis(zero.length, um.length, dois.length, tres.length, quatro.length);
+                campoMinado.Abrir(array[0], array[1]);
+            }
+
+            else if (um.length == 10 && quatro.length == 0) {
+                campoMinado.Abrir(5, 6);
+            }
+
+            else if (quatro.length == 1) {
+                let array = jogadasPossiveis(zero.length, um.length, dois.length, tres.length, quatro.length);
+                campoMinado.Abrir(array[0], array[1]);
+            }
+
+            else if (zero.length == 41 && tres.length == 3) {
+                campoMinado.Abrir(6, 7);
+            }
+
+            else if (tres.length == 4) {
+                let array = jogadasPossiveis(zero.length, um.length, dois.length, tres.length, quatro.length);
+                campoMinado.Abrir(array[0], array[1]);
+            }
+
+
+            zero = [];
+            um = [];
+            dois = [];
+            tres = [];
+
+            jogadas += 1;
+            estado = campoMinado.JogoStatus();
+
+            if (estado == 1) {
+                document.getElementById('exibir-execucao').innerHTML += '----------- Status: Vitória-----------';
+                document.getElementById('exibir-execucao').innerHTML += '<pre>' + campoMinado.Tabuleiro() + '</pre>';
+            }
+
+            else if (estado == 2) {
+                document.getElementById('exibir-execucao').innerHTML += '----------- Status: Game over-----------';
+                document.getElementById('exibir-execucao').innerHTML += '<pre>' + campoMinado.Tabuleiro() + '</pre>';
+                break;
+            }
+
+            else if (estado == 0) {
+                document.getElementById('exibir-execucao').innerHTML += '----------- Status: Jogo em aberto-----------';
+                document.getElementById('exibir-execucao').innerHTML += '<pre>' + campoMinado.Tabuleiro() + '</pre>';
+            }
+
+        }
+
+
+
+
+
+
+
+
+    </script>
+</body>
+
+</html>
